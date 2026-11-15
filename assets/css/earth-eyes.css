@@ -1,0 +1,48 @@
+/* ByteMedicals — NASA Eyes on the Earth live view (Dashboard "Orbit View").
+   The replaced scene is taller than the old CSS animation so the NASA app
+   is usable; the old starfield/gradient pseudo-elements of .orbit-scene
+   are hidden behind the frame. */
+
+/* ---- replaced scene ---- */
+.orbit-scene.ee-active {
+  height: 440px;
+  background: #000;
+  box-shadow: none;
+  perspective: none;
+}
+.orbit-scene.ee-active::before,
+.orbit-scene.ee-active::after { display: none; }
+
+.ee-wrap { position: absolute; inset: 0; }
+.ee-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #000; }
+
+/* ---- loading / fallback overlays ---- */
+.ee-loading, .ee-fallback {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  background: #05080d; color: var(--text-dim); text-align: center; padding: 20px;
+}
+.ee-loading[hidden], .ee-fallback[hidden] { display: none; }
+.ee-loading p, .ee-fallback p { margin: 0; font-size: 0.85rem; max-width: 420px; }
+.ee-spinner {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 2px solid var(--line); border-top-color: var(--accent);
+  animation: ee-spin 0.9s linear infinite;
+}
+@keyframes ee-spin { to { transform: rotate(360deg); } }
+
+/* ---- toolbar under the scene ---- */
+.ee-bar { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.ee-spacer { flex: 1; }
+.ee-live { display: inline-flex; align-items: center; gap: 7px; font-family: 'Space Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--text-dim); }
+.ee-live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); animation: ee-pulse 1.8s ease-in-out infinite; }
+@keyframes ee-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.ee-btn { font-size: 0.72rem; padding: 6px 10px; }
+.ee-note { margin: 8px 0 0; font-size: 0.78rem; color: var(--text-dim); }
+
+@media (max-width: 700px) {
+  .orbit-scene.ee-active { height: 340px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ee-spinner, .ee-live-dot { animation: none; }
+}

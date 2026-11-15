@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+
+# Logs and local OS/editor files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+
+# ByteMedicals + PRAG: base de datos local y credenciales de Google
+*.db
+*.db-journal
+gdrive_credentials.json
+credentials.json

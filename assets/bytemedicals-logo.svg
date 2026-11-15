@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 96" role="img" aria-labelledby="bmTitle bmDesc">
+  <title id="bmTitle">ByteMedicals</title>
+  <desc id="bmDesc">Original ByteMedicals mark: an orbit ring with a telemetry pulse and a crew position dot, drawn for this project. No external logo was reused.</desc>
+  <!-- Mark: orbit ring + pulse + crew dot -->
+  <g>
+    <circle cx="34" cy="34" r="27" fill="none" stroke="#4f8fb8" stroke-width="2.5"/>
+    <circle cx="34" cy="34" r="18" fill="none" stroke="#14505c" stroke-width="1.5"/>
+    <path d="M14 34h9l4-9 7 18 4-9h10" fill="none" stroke="#e8eef2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="55" cy="15" r="3.5" fill="#7fb98a"/>
+    <circle cx="34" cy="34" r="2" fill="#d9a441"/>
+  </g>
+  <!-- Wordmark -->
+  <g font-family="'Space Mono', 'Courier New', monospace">
+    <text x="74" y="40" fill="#e8eef2" font-size="23" font-weight="700" letter-spacing="1">ByteMedicals</text>
+    <text x="75" y="60" fill="#8b98a5" font-size="10" font-weight="700" letter-spacing="2.5">SPACE HEALTH MONITORING</text>
+  </g>
+  <path d="M75 72h200" stroke="#4f8fb8" stroke-width="1.5" stroke-linecap="round" opacity="0.55"/>
+</svg>

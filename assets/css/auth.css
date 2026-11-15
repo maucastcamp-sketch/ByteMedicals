@@ -1,0 +1,23 @@
+/* Autenticación (Paso 2): sin sesión solo se ve la página de login. */
+body:not(.authed) .app-shell { display: none; }
+body:not(.authed) #toastStack { display: none; }
+
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.auth-card { width: 100%; max-width: 420px; }
+.auth-card label { display: block; margin-bottom: 12px; font-size: .85rem; }
+.auth-card .text-input { width: 100%; box-sizing: border-box; margin-top: 4px; }
+
+.auth-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.auth-tabs .text-btn.active { font-weight: 700; text-decoration: underline; }
+
+.auth-error { color: #e5484d; font-size: .85rem; min-height: 1.2em; margin: 8px 0 0; }
+
+.user-chip { font-size: .8rem; color: var(--muted); }

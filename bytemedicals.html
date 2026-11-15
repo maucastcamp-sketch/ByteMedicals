@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Simulación educativa de salud para misiones espaciales.">
+  <title>ByteMedicals</title>
+  <link rel="icon" type="image/svg+xml" href="assets/bytemedicals-logo.svg">
+  <link rel="stylesheet" href="assets/css/bytemedicals.css">
+  <link rel="stylesheet" href="assets/css/anatomy-3d.css">
+  <link rel="stylesheet" href="assets/css/earth-eyes.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/conditions.css">
+  <link rel="stylesheet" href="assets/css/signos.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard" aria-label="ByteMedicals — Panel de control">
+        <img src="assets/bytemedicals-logo.svg" alt=""><span>ByteMedicals</span>
+      </a>
+      <nav aria-label="Navegación principal">
+        <button class="navbtn active" data-page="dashboard">Panel de control</button>
+        <button class="navbtn" data-page="overview">Resumen de misión</button>
+        <button class="navbtn" data-page="signos">Signos vitales</button>
+        <button class="navbtn" data-page="anatomy">Anatomía Humana</button>
+        <button class="navbtn" data-page="assistant">AI Health Assistant</button>
+        <button class="navbtn" data-page="medications">Medicamentos e insumos</button>
+        <button class="navbtn" data-page="conditions">Condiciones frecuentes</button>
+        <button class="navbtn" data-page="admin" id="navAdmin" style="display:none">🛡️ Administración</button>
+      </nav>
+    </aside>
+
+    <main class="wrap">
+      <header class="topbar">
+        <div><p class="eyebrow">SIMULACIÓN DE SALUD PARA MISIONES ESPACIALES</p><h1>ByteMedicals</h1></div>
+        <div class="header-actions">
+          <div class="mission-day">DÍA <strong id="headerDay">0</strong> / 180</div>
+          <button class="icon-btn" id="themeBtn" type="button" aria-label="Cambiar tema">◐</button>
+          <button class="icon-btn" id="resetBtn" type="button">Reiniciar</button>
+          <span class="user-chip" id="userChip" hidden></span>
+          <button class="icon-btn" id="logoutBtn" type="button" hidden>Cerrar sesión</button>
+        </div>
+      </header>
+      <div class="statusbar" role="status">
+        <span class="status-pill" id="statusPill">NOMINAL</span>
+        <span>Tiempo de misión <b id="metClock">000:00:00:00</b></span>
+        <span class="spacer"></span><span id="utcClock"></span>
+      </div>
+
+      <section class="page active" id="page-dashboard" aria-labelledby="dashboardTitle">
+        <h2 id="dashboardTitle">Panel de control</h2>
+        <div class="mission-strip" id="missionStrip"></div>
+        <div class="dashboard-hero">
+          <section class="panel orbit-panel">
+            <h3>Mapa orbital de la Tierra</h3>
+            <div class="orbit-scene" id="orbitScene" aria-label="Mapa orbital interactivo de NASA Eyes"></div>
+          </section>
+          <section class="panel profile-panel">
+            <h3>Tripulante</h3><div class="profile-avatar" aria-hidden="true">✦</div>
+            <p class="eyebrow">COMANDANTE</p><h2 id="profileName">Comandante</h2>
+            <p class="muted">Telemetría simulada.</p>
+            <div class="profile-stats">
+              <div><span>SpO₂</span><strong id="profileO2">99%</strong></div>
+              <div><span>Temperatura</span><strong id="profileTemp">36.5 °C</strong></div>
+            </div>
+          </section>
+        </div>
+        <section class="panel">
+          <div class="section-heading"><div><p class="eyebrow">ESTADO ACTUAL</p><h3>Indicadores de salud</h3></div><button class="text-btn" data-goto="signos">Ver signos vitales →</button></div>
+          <div class="signos-grid" id="dashboardSignos"></div>
+        </section>
+        <section class="panel focus-panel">
+          <div><p class="eyebrow">PRIORIDAD</p><h3>Enfoque de hoy</h3><p id="focusText">Avanza la misión para comenzar.</p></div>
+          <button class="primary-btn" id="advanceBtn" type="button">Avanzar un día</button>
+        </section>
+        <section class="panel"><div class="section-heading"><div><p class="eyebrow">SEGUIMIENTO</p><h3>Alertas de misión</h3></div></div><ul class="alerts-list" id="alertsFeed"></ul></section>
+      </section>
+
+      <section class="page" id="page-overview" aria-labelledby="overviewTitle">
+        <h2 id="overviewTitle">Resumen de misión</h2>
+        <section class="panel overview-card">
+          <div class="score-wrap"><canvas id="overviewRing" width="160" height="160"></canvas><strong id="overviewScore">100</strong></div>
+          <div class="overview-copy"><p class="eyebrow" id="overviewPhase">FASE DE LANZAMIENTO</p><h3>Estado general de la tripulación</h3>
+            <p class="muted">Indicadores simulados de la misión. La radiación se presenta por separado.</p>
+            <div class="overview-metrics"><div><span>Día de misión</span><strong id="overviewDay">0 / 180</strong></div><div><span>Margen de radiación</span><strong id="overviewRad">600 mSv</strong></div><div><span>Sistema más bajo</span><strong id="overviewLowest">—</strong></div></div>
+          </div>
+        </section>
+        <section class="panel"><div class="section-heading"><div><p class="eyebrow">PROGRESO</p><h3>Duración de misión</h3></div><strong id="progressPct">0%</strong></div><div class="progress-track"><div id="progressBar"></div></div><p class="muted" id="progressLabel">Día 0 de 180</p></section>
+        <section class="panel"><div class="section-heading"><div><p class="eyebrow">TRIPULANTE</p><h3>Perfil de misión</h3></div></div><label for="crewName">Nombre</label><input class="text-input" id="crewName" type="text" value="Comandante" maxlength="60"><div class="mission-timeline" id="missionTimeline"></div></section>
+      </section>
+
+      <section class="page" id="page-signos" aria-labelledby="signosTitle">
+        <h2 id="signosTitle">Signos vitales</h2>
+        <section class="panel">
+          <div class="section-heading"><div><p class="eyebrow">TELEMETRÍA SIMULADA</p><h3>Monitor en vivo</h3></div><span class="status-pill" id="liveSignal">SEÑAL NOMINAL</span></div>
+          <div class="vital-grid" id="signosCards">
+            <article class="vital-card vital-card-wide"><div class="vital-head"><span>Frecuencia cardíaca</span><small id="liveHrState">NOMINAL</small></div><strong class="vital-value" id="liveHr">72 bpm</strong><p class="vital-ref">Referencia: 60–100 lpm en reposo</p><canvas id="waveCanvas" width="860" height="150" aria-label="Ritmo cardíaco simulado"></canvas></article>
+            <article class="vital-card"><div class="vital-head"><span>Presión arterial</span><small id="liveBpState">NOMINAL</small></div><strong class="vital-value" id="liveBp">118/76 mmHg</strong><p class="vital-ref">Referencia: ~120/80 mmHg</p><canvas id="bpChart" width="520" height="150" aria-label="Presión arterial sistólica y diastólica"></canvas></article>
+            <article class="vital-card"><div class="vital-head"><span>Frecuencia respiratoria</span><small id="liveRrState">NOMINAL</small></div><strong class="vital-value" id="liveRr">15 rpm</strong><p class="vital-ref">Referencia: 12–20 resp/min</p><canvas id="rrChart" width="520" height="150" aria-label="Onda respiratoria simulada"></canvas></article>
+            <article class="vital-card"><div class="vital-head"><span>Temperatura corporal</span><small id="liveTempState">NOMINAL</small></div><strong class="vital-value" id="liveTemp">36.5 °C</strong><p class="vital-ref">Referencia: 36.5–37.3 °C</p><canvas id="tempChart" width="520" height="150" aria-label="Termómetro simulado"></canvas></article>
+            <article class="vital-card"><div class="vital-head"><span>Saturación de oxígeno</span><small id="liveSpo2State">NOMINAL</small></div><strong class="vital-value" id="liveSpo2">99%</strong><p class="vital-ref">Referencia: por encima de 94–95 %</p><canvas id="spo2Chart" width="520" height="150" aria-label="Saturación de oxígeno"></canvas></article>
+            <article class="vital-card"><div class="vital-head"><span>Nivel de dolor</span><small id="livePainState">SIN DOLOR</small></div><strong class="vital-value" id="livePain">0 / 10</strong><p class="vital-ref">Referencia: escala subjetiva de 0 a 10</p><canvas id="painChart" width="520" height="150" aria-label="Escala de dolor de 0 a 10"></canvas></article>
+            <article class="vital-card"><div class="vital-head"><span>Peso corporal</span><small id="liveWeightState">ESTABLE</small></div><strong class="vital-value" id="liveWeight">74.0 kg</strong><p class="vital-ref">Referencia: estable ± 2 kg</p><canvas id="weightChart" width="520" height="150" aria-label="Evolución del peso corporal"></canvas></article>
+          </div>
+          <div class="radiation-meter"><canvas id="gaugeCanvas" width="160" height="100" aria-label="Medidor de exposición simulada a radiación"></canvas><div><span>EXPOSICIÓN ACUMULADA</span><strong id="gaugeVal">0 mSv</strong><small id="doseState">Límite de referencia: 600 mSv</small></div></div>
+        </section>
+        <section class="panel"><div class="section-heading"><div><p class="eyebrow">REGISTRO</p><h3>Telemetría de misión</h3></div><button class="text-btn" id="exportBtn" type="button">Exportar CSV</button></div><div class="table-wrap"><table class="telemetry"><thead><tr><th>Día</th><th>FC</th><th>SpO₂</th><th>Temp.</th><th>Radiación</th></tr></thead><tbody id="telemetryBody"></tbody></table></div></section>
+      </section>
+
+      <section class="page" id="page-anatomy" aria-labelledby="anatomyTitle">
+        <h2 id="anatomyTitle">Anatomía Humana</h2>
+        <section class="panel anatomy-layout"><div class="an-figure" id="anFigure" aria-label="Modelo anatómico 3D interactivo"></div><div class="an-copy"><p class="muted">Selecciona un sistema para explorar el modelo y ver sus indicadores simulados.</p><div class="an-sys-grid" id="anSystems"></div><div class="an-detail" id="anDetail"></div></div></section>
+        <p class="model-credit">Modelos <a href="https://github.com/Z-Anatomy/" target="_blank" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0). Se requiere internet para cargar los modelos 3D; hay un esquema interactivo de respaldo.</p>
+      </section>
+
+      <section class="page" id="page-assistant" aria-labelledby="assistantTitle">
+        <h2 id="assistantTitle">AI Health Assistant</h2>
+        <section class="panel chat-shell"><p class="safety-note">Respuestas de PRAG a partir de tus documentos de Google Drive, con sus fuentes. No es un servicio de IA clínica ni ofrece diagnósticos.</p>
+          <p class="muted" id="pragFilesLine">Consultando documentos…</p>
+          <div class="chat-conversations">
+            <div class="chat-conv-head"><strong>Conversaciones</strong><button class="text-btn" id="newChatBtn" type="button">+ Nueva</button></div>
+            <div class="chat-conv-list" id="chatConvList"></div>
+          </div>
+          <div class="assistant-stats"><div><span>DÍA</span><strong id="aiDayStat">0 / 180</strong></div><div><span>PRIORIDAD</span><strong id="aiPriorityStat">Nominal</strong></div><div><span>RADIACIÓN</span><strong id="aiRadStat">0 mSv</strong></div></div>
+          <div class="chat-log" id="chatLog" aria-live="polite"><p class="assistant-message">Hola. Pregúntame sobre tus documentos o cuéntame cómo te sientes en la misión; te responderé citando las fuentes.</p></div>
+          <div class="suggestions"><button class="text-btn" data-q="Resume lo más importante de mis documentos.">Resumen de documentos</button><button class="text-btn" data-q="¿Qué temas cubren mis documentos?">Temas</button><button class="text-btn" data-q="Dame los puntos clave de mi documentación.">Puntos clave</button></div>
+          <form id="chatForm" class="chat-form"><label class="sr-only" for="chatInput">Pregunta</label><input id="chatInput" class="text-input" type="text" autocomplete="off" placeholder="Escribe una pregunta sobre la simulación"><button class="primary-btn" id="chatSendBtn" type="submit">Enviar</button><button class="text-btn" id="clearChatBtn" type="button">Limpiar</button></form>
+        </section>
+      </section>
+
+      <section class="page" id="page-medications" aria-labelledby="medicationsTitle">
+        <h2 id="medicationsTitle">Medicamentos e insumos</h2>
+        <section class="panel"><p class="safety-note">Registro personal para la simulación. No recomienda medicamentos ni modifica dosis.</p>
+          <div class="medication-db">
+            <div class="section-heading">
+              <div><p class="eyebrow">BASE DE DATOS</p><h3>Catálogo de insumos espaciales</h3></div>
+              <a class="text-btn" href="bytemedicals_insumos_espaciales.sql" target="_blank" rel="noopener">Ver SQL</a>
+            </div>
+            <div id="medicationDatabase" class="medication-db-list"></div>
+          </div>
+          <form id="medicationForm" class="medication-form"><label>Medicamento<input class="text-input" id="medName" type="text" maxlength="80" required></label><label>Dosis indicada<input class="text-input" id="medDose" type="text" maxlength="80" placeholder="Opcional"></label><label>Horarios (separados por coma)<input class="text-input" id="medTimes" type="text" placeholder="08:00, 20:00" required></label><button class="primary-btn" type="submit">Añadir registro</button></form>
+          <div id="medicationList" class="medication-list"></div>
+        </section>
+      </section>
+      <section class="page" id="page-conditions" aria-labelledby="conditionsTitle">
+        <h2 id="conditionsTitle">Condiciones frecuentes en astronautas</h2>
+        <p class="muted">Las 17 categorías de la NASA (OCHMO). Toca una para ver sus parámetros.</p>
+        <p class="safety-note">Datos simulados. Los rangos de referencia son generales, no umbrales clínicos de la NASA ni criterios de aptitud. Este módulo no diagnostica ni evalúa la aptitud para el vuelo.</p>
+        <div class="cond-list" id="conditionsList"></div>
+        <div class="cond-detail" id="conditionsDetail" hidden></div>
+      </section>
+      <section class="page" id="page-admin" aria-labelledby="adminTitle">
+        <h2 id="adminTitle">Administración</h2>
+        <p class="muted" id="adminOnlyNote" hidden>Solo los administradores pueden ver este panel.</p>
+        <div id="adminContent" hidden>
+          <section class="panel"><h3>Estado de los servicios</h3><div id="adminStatus"><p class="muted">Cargando…</p></div></section>
+          <section class="panel"><h3>Documentos indexados</h3><div id="adminFiles"><p class="muted">Cargando…</p></div></section>
+          <section class="panel"><h3>Sincronizar con Google Drive</h3><p class="muted">Lee la carpeta de Drive y actualiza la base de documentos de PRAG. Solo tú, como administrador, puedes lanzarla.</p><button class="primary-btn" id="adminSyncBtn" type="button">Sincronizar ahora</button><p class="muted" id="adminSyncResult"></p></section>
+          <section class="panel"><h3>Usuarios</h3><div id="adminUsers"><p class="muted">Cargando…</p></div></section>
+        </div>
+      </section>
+      <footer class="footer">ByteMedicals · Simulación educativa · No es un dispositivo médico</footer>
+    </main>
+  </div>
+  <section class="page" id="page-auth" aria-labelledby="authTitle">
+    <div class="auth-wrap">
+      <div class="panel auth-card">
+        <p class="eyebrow">BYTEMEDICALS</p>
+        <h2 id="authTitle">Inicia sesión</h2>
+        <p class="muted">Crea tu cuenta para conversar con PRAG. Tus conversaciones son privadas: solo tú puedes verlas.</p>
+        <div class="auth-tabs">
+          <button class="text-btn active" id="authTabLogin" type="button">Iniciar sesión</button>
+          <button class="text-btn" id="authTabRegister" type="button">Registrarse</button>
+        </div>
+        <form id="loginForm">
+          <label>Correo electrónico<input class="text-input" id="loginEmail" type="email" required autocomplete="email"></label>
+          <label>Contraseña<input class="text-input" id="loginPassword" type="password" required autocomplete="current-password"></label>
+          <button class="primary-btn" type="submit">Entrar</button>
+        </form>
+        <form id="registerForm" hidden>
+          <label>Correo electrónico<input class="text-input" id="registerEmail" type="email" required autocomplete="email"></label>
+          <label>Contraseña (mínimo 8 caracteres)<input class="text-input" id="registerPassword" type="password" required minlength="8" autocomplete="new-password"></label>
+          <button class="primary-btn" type="submit">Crear cuenta</button>
+        </form>
+        <p class="auth-error" id="authError" role="alert"></p>
+      </div>
+    </div>
+  </section>
+  <div id="toastStack" aria-live="polite"></div>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/bytemedicals.js"></script>
+  <script src="assets/js/signos.js"></script>
+  <script src="assets/js/conditions.js"></script>
+  <script src="assets/js/anatomy.js"></script>
+  <script src="assets/js/anatomy-3d.js"></script>
+  <script src="assets/js/earth-eyes.js"></script>
+  <script src="assets/js/medications.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

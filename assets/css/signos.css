@@ -1,0 +1,75 @@
+/* Signos vitales — 7 tarjetas, cada una con su propia gráfica.
+   Módulo original de ByteMedicals. */
+
+.vital-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.vital-card {
+  border: 1px solid var(--border, rgba(130, 160, 180, .2));
+  border-radius: 12px;
+  padding: 14px 16px 12px;
+  background: var(--panel-2, rgba(255, 255, 255, .02));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vital-card-wide {
+  grid-column: span 2;
+}
+
+.vital-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.vital-head > span {
+  font-size: 13px;
+  color: var(--muted, #8fa3b3);
+  letter-spacing: .02em;
+}
+
+.vital-head > small {
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--accent, #54d7a0);
+  white-space: nowrap;
+}
+
+.vital-head > small.watch {
+  color: var(--amber, #f5c45e);
+}
+
+.vital-head > small.crit {
+  color: var(--danger, #ff6874);
+}
+
+.vital-value {
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 650;
+}
+
+.vital-ref {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted, #8fa3b3);
+}
+
+.vital-card canvas {
+  width: 100%;
+  height: auto;
+  margin-top: 8px;
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .vital-card-wide {
+    grid-column: span 1;
+  }
+}

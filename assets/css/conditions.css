@@ -1,0 +1,200 @@
+/* Condiciones frecuentes en astronautas (v4.3). Portada con 17
+ * opciones con imagen + detalle por categoría con pestañas por
+ * nivel. Reutiliza las variables del tema (--panel, --line,
+ * --accent, --ok, --watch, --crit, --muted, --text) para
+ * respetar el modo claro/oscuro. */
+
+/* Portada: rejilla de 17 opciones seleccionables. */
+.cond-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.cond-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel-raised);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+}
+
+.cond-option:hover,
+.cond-option:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.cond-option-pic {
+  display: block;
+  width: 52px;
+  height: 52px;
+  color: var(--accent);
+}
+
+.cond-option-pic svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cond-option-name {
+  font-weight: 650;
+  font-size: .95rem;
+  line-height: 1.25;
+}
+
+.cond-option-en {
+  font-size: .72rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* Detalle de una categoría. */
+.cond-detail {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel-raised);
+  padding: 16px 18px;
+}
+
+.cond-detail .section-heading {
+  margin-top: 10px;
+}
+
+.cond-detail-pic {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.cond-back {
+  padding-left: 0;
+}
+
+.cond-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.cond-tabs .text-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cond-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 6px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-raised);
+}
+
+.cond-chart-host {
+  margin: 6px 0 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-raised);
+  text-align: center;
+}
+
+.cond-chart-host svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Filas compactas de parámetros (un nivel a la vez). */
+.cond-var-list {
+  display: grid;
+  gap: 8px;
+}
+
+.cond-var-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.cond-var-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cond-var-name {
+  font-weight: 600;
+}
+
+.cond-var-ref {
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.cond-var-val {
+  align-items: flex-end;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cond-sim {
+  color: var(--watch);
+  font: 700 .6rem 'Space Mono', monospace;
+}
+
+.cond-note {
+  margin-top: 12px;
+}
+
+.cond-bodymap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.cond-bodymap-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
+.cond-odonto {
+  display: grid;
+  gap: 6px;
+}
+
+.cond-odonto-row {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 4px;
+}
+
+.cond-tooth {
+  display: block;
+  height: 26px;
+  border-radius: 4px 4px 8px 8px;
+  opacity: .85;
+}
